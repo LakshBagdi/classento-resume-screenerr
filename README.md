@@ -4,72 +4,85 @@ bulk resume upload (PDF/DOCX/TXT), scores each against your JD using whichever p
 
 # Classento Resume Screener
 
-Bulk-upload resumes → score against a job description using your own Groq, Gemini, or DeepSeek API key → manage candidates through Accept / Reject / Hold.
+An AI-powered resume screening tool built with Streamlit. The application compares multiple resumes against a job description, ranks candidates based on relevance, and allows recruiters to manage applicants in one place.
 
-## Run it locally first (optional, to test)
+## Features
+
+- Bulk upload resumes (PDF, DOCX, TXT)
+- Compare resumes against a job description
+- Supports Groq, Gemini, and DeepSeek APIs
+- Candidate status management (Accept, Hold, Reject)
+- Resume ranking with match scores
+- Export results as CSV
+
+## Running Locally
+
+Install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
+
+Start the application:
+
+```bash
 streamlit run app.py
 ```
 
-It opens at `http://localhost:8501`. Paste your API key in the sidebar and try it before deploying.
+The app will be available at:
 
-## Deploy to Streamlit Community Cloud (free, ~5 minutes)
+```
+http://localhost:8501
+```
 
-1. **Push this folder to a GitHub repo.** You already have one at
-   `github.com/LakshBagdi/classento-resume-screener` — replace its contents with these files
-   (`app.py`, `requirements.txt`, this `README.md`), commit, and push:
+## Deployment
 
-   ```bash
-   cd classento-resume-screener
-   # copy app.py and requirements.txt into this folder, replacing what's there
-   git add .
-   git commit -m "Replace with AI resume screener app"
-   git push
-   ```
+The project is designed to run on Streamlit Community Cloud.
 
-2. Go to **[share.streamlit.io](https://share.streamlit.io)** and sign in with your GitHub account.
+1. Push the project to a GitHub repository.
+2. Create a new app on Streamlit Community Cloud.
+3. Select your repository and branch.
+4. Set the main file to:
 
-3. Click **"New app"**.
+```
+app.py
+```
 
-4. Fill in:
-   - **Repository:** `LakshBagdi/classento-resume-screener`
-   - **Branch:** `main` (or whatever your default branch is)
-   - **Main file path:** `app.py`
+5. Deploy the application.
 
-5. Click **Deploy**. It builds for a minute or two, then gives you a public URL like
-   `https://classento-resume-screener.streamlit.app` — this is what you send your boss.
+## API Keys
 
-6. **API key:** the key box lives in the app's sidebar — whoever uses the deployed app pastes
-   their own key there each session. Nothing is stored server-side. If you'd rather have one
-   shared key baked in so your team doesn't need their own:
-   - In the Streamlit Cloud dashboard, go to your app → **Settings → Secrets**
-   - Add:
-     ```toml
-     DEFAULT_API_KEY = "your-key-here"
-     DEFAULT_PROVIDER = "groq"
-     ```
-   - Then in `app.py`, near the top of the sidebar section, add:
-     ```python
-     import os
-     default_key = st.secrets.get("DEFAULT_API_KEY", "")
-     if not api_key:
-         api_key = default_key
-     ```
-   - This way the key lives in Streamlit's encrypted secrets store, not in your code or GitHub repo.
+The application requires an API key from one of the supported providers.
 
-## Where to get each API key
+Supported providers:
 
-- **Groq** (free tier, no credit card): [console.groq.com](https://console.groq.com)
-- **Gemini** (free tier): [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-- **DeepSeek**: [platform.deepseek.com](https://platform.deepseek.com)
+- Groq
+- Google Gemini
+- DeepSeek
+
+Paste the API key into the sidebar before processing resumes.
+
+## Optional: Streamlit Secrets
+
+To avoid entering an API key every session, you can store it using Streamlit Secrets.
+
+Example:
+
+```toml
+DEFAULT_API_KEY = "your-api-key"
+DEFAULT_PROVIDER = "groq"
+```
+
+Then load it in `app.py`:
+
+```python
+default_key = st.secrets.get("DEFAULT_API_KEY", "")
+if not api_key:
+    api_key = default_key
+```
 
 ## Notes
 
-- **Model names drift over time.** If a provider retires a model, edit the `MODELS` dict at the
-  top of `app.py` — that's the only place model names are set.
-- **Scanned/image-only PDFs** won't extract text — the app will flag them rather than fail silently.
-- **CSV export** at the bottom of the results section — useful for sharing a shortlist outside the app.
-- **This is a screening aid, not a final decision-maker.** Have a human spot-check borderline
-  scores (5-7) before rejecting anyone outright.
+- Text-based PDF, DOCX, and TXT resumes are supported.
+- Image-only or scanned PDFs may not contain extractable text.
+- Provider model names can be updated in the `MODELS` dictionary if required.
